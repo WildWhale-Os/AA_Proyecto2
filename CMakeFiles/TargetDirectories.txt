@@ -1,0 +1,3 @@
+/home/tomasb/Documents/Universidad/AA/proyecto2/CMakeFiles/proyecto2.dir
+/home/tomasb/Documents/Universidad/AA/proyecto2/CMakeFiles/edit_cache.dir
+/home/tomasb/Documents/Universidad/AA/proyecto2/CMakeFiles/rebuild_cache.dir
