@@ -2,3 +2,5 @@ proyecto2
 cmake-build-*/ 
 CMakeCache.txt
 Makefile
+CMakeFiles/*
+cmake_install.cmake
