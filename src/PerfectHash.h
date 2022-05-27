@@ -10,7 +10,7 @@ struct bucket{
 class PerfectHash {
     private: 
         int tam;
-        bucket arr[tam];
+        bucket arr[12];
         void first_hash();
         void second_hash();
 
@@ -20,4 +20,4 @@ class PerfectHash {
         void insert();
         void search();
         int size();
-}
+};

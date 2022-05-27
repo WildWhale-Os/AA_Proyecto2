@@ -6,3 +6,5 @@ CMakeFiles/*
 cmake_install.cmake
 build/*
 CMakeLists.txt
+bin
+*.a
