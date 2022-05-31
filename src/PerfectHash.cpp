@@ -6,9 +6,7 @@ PerfectHash::PerfectHash(){}
 
 PerfectHash::~PerfectHash(){}
 
-void PerfectHash::first_hash(){}
-
-void PerfectHash::second_hash(){}
+void PerfectHash::hash(){}
 
 void PerfectHash::insert(){}
 
