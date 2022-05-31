@@ -49,7 +49,8 @@ void PerfectHash::insert(string in[]){
     int extra = 20;
     for (int i = 0; i < tam; i++)
     {
-        arr[first_hash(in[i])] = vector<string>(bucket_size[i]+extra);
+        arr[first_hash(in[i])] = vector<string>();
+        arr[first_hash(in[i])].resize(bucket_size[i] + extra);
     }
     
     for (int i = 0; i < tam; i++)
