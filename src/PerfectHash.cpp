@@ -49,24 +49,23 @@ void PerfectHash::insert(string in[]){
     int extra = 20;
     for (int i = 0; i < tam; i++)
     {
-        arr[first_hash(in[i])] = vector<string>();
-        arr[first_hash(in[i])].resize(bucket_size[i] + extra);
+        int pos = first_hash(in[i]);
+        int temp_tam = bucket_size[i]+extra;
+        arr[pos] = vector<string>(temp_tam);
     }
     
     for (int i = 0; i < tam; i++)
     {
         if(search(in[i]))
             return;
-        arr[first_hash(in[i])][second_hash(in[i],bucket_size[i])] = in[i];
+        int f1 = first_hash(in[i]);
+        int f2 = second_hash(in[i],bucket_size[i]) ;
+        arr[f1][f2] = in[i];
     }
-
 }
 
 bool PerfectHash::search(string s){
-    
-    // if(itr == arr[first_hash(s)].end())
-    //     return 0;
-    // return 1;
+
 }
 
 int PerfectHash::size(){
