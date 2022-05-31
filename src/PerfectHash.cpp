@@ -3,7 +3,8 @@
 
 using namespace std;
 
-int hash(int a, int b, int p, int key, int size) {
+
+int PerfectHash::hash(int a, int b, int p, int key, int size) {
   return abs(((a * key + b) % p) % size);
 }
 

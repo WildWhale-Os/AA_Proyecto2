@@ -11,6 +11,7 @@ private:
   vector<string> *arr;
   int first_hash(string);
   int second_hash(string, int*);
+  int hash(int,int,int,int,int);
 
 public:
   PerfectHash(int tam);
