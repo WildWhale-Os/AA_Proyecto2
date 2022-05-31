@@ -4,13 +4,13 @@ using namespace std;
 
 typedef long int lint;
 
-lint hash(lint a, lint b, lint p, int key, int size){
-  return ((a*key + b)%p)%size;
+int hash(lint a, lint b, lint p, int key, int size) {
+  return ((a * key + b) % p) % size;
 }
 
 PerfectHash::PerfectHash(int tam) {
   this->tam = tam;
-  arr = new unordered_set<string>[tam];
+  arr = new vector<string>[tam];
   // si terminamos usando sets, podria implementarce con un set de sets
 }
 
@@ -37,14 +37,11 @@ int PerfectHash::second_hash(string s) {
 void PerfectHash::insert(string s) {
   if (search(s))
     return;
-  arr[first_hash(s)].insert(s);
 }
 
 int PerfectHash::search(string s) {
-  unordered_set<string>::iterator itr = arr[first_hash(s)].find(s);
-  if (itr == arr[first_hash(s)].end())
-    return 0;
-  return 1;
+  int hash_one = first_hash(s);
+  int hash_two = second_hash(s);
 }
 
 int PerfectHash::size() {}
