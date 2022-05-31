@@ -3,16 +3,13 @@
 
 using namespace std;
 
-struct bucket{
-    vector<string> s;
-};
 
 class PerfectHash {
     private: 
         int tam;
-        bucket arr[12];
-        void first_hash();
-        void second_hash();
+        vector<string> *arr;
+        void first_hash(string);
+        void second_hash(string);
 
     public:
         PerfectHash();
