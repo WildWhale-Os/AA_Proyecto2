@@ -2,10 +2,17 @@
 
 using namespace std;
 
+typedef long int lint;
+
+lint hash(lint a, lint b, lint p, int key, int size){
+  return ((a*key + b)%p)%size;
+}
+
 PerfectHash::PerfectHash(int tam){
     this->tam = tam;
-    arr = new unordered_set<string>[tam]; 
-    //si terminamos usando sets, podria implementarce con un set de sets
+    int aux[tam] = {};
+    bucket_size = aux;
+    arr = new vector<string>[tam]; 
 }
 
 PerfectHash::~PerfectHash(){}
@@ -20,44 +27,47 @@ int PerfectHash::first_hash(string s){
     return h;
 }
 
-int PerfectHash::second_hash(string s){
+int PerfectHash::second_hash(string s,int t){
     int h = 0;
 	for (int i = 0; i < s.size(); ++i)
 	{
 		h = h*43 + s[i]; //funcion NO perfecta
-		h %= tam;
+		h %= t;
 	}
     return h;
 }
 
-void PerfectHash::insert(string s){
-    if(search(s))
-        return;
-    arr[first_hash(s)].insert(s);
+int PerfectHash::get_bucket_size(string in[]){
+    for (int i = 0; i < tam; i++)
+    {
+        bucket_size[first_hash(in[i])]++;
+    }  
 }
 
-int PerfectHash::search(string s){
-    unordered_set<string>::iterator itr = arr[first_hash(s)].find(s);
-    if(itr == arr[first_hash(s)].end())
-        return 0;
-    return 1;
+void PerfectHash::insert(string in[]){
+    get_bucket_size(in);
+    int extra = 20;
+    for (int i = 0; i < tam; i++)
+    {
+        arr[first_hash(in[i])] = vector<string>(bucket_size[i]+extra);
+    }
+    
+    for (int i = 0; i < tam; i++)
+    {
+        if(search(in[i]))
+            return;
+        arr[first_hash(in[i])][second_hash(in[i],bucket_size[i])] = in[i];
+    }
+
 }
 
-int PerfectHash::size(){}
+bool PerfectHash::search(string s){
+    
+    // if(itr == arr[first_hash(s)].end())
+    //     return 0;
+    // return 1;
+}
 
-//                 |     set             | unordered_set
-// ---------------------------------------------------------
-// Ordering        | increasing  order   | no ordering
-//                 | (by default)        |
-
-// Implementation  | Self balancing BST  | Hash Table
-//                 | like Red-Black Tree |  
-
-// search time     | log(n)              | O(1) -> Average 
-//                 |                     | O(n) -> Worst Case
-
-// Insertion time  | log(n) + Rebalance  | Same as search
-                      
-// Deletion time   | log(n) + Rebalance  | Same as search
-
-// Overall space   | n                   | n
+int PerfectHash::size(){
+    
+}
