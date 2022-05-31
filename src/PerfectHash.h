@@ -9,12 +9,13 @@ class PerfectHash {
         vector<string> *arr;
         int first_hash(string);
         int second_hash(string,int);
-        int get_bucket_size(string*);
+        void get_bucket_size(string*);
 
     public:
         PerfectHash(int tam);
         ~PerfectHash();
-        void insert(string*);
+        void build(string*);
+        void insert(string,int);
         bool search(string);
         int size();
 };

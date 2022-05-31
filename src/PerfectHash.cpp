@@ -37,35 +37,45 @@ int PerfectHash::second_hash(string s,int t){
     return h;
 }
 
-int PerfectHash::get_bucket_size(string in[]){
+void PerfectHash::get_bucket_size(string in[]){
     for (int i = 0; i < tam; i++)
     {
         bucket_size[first_hash(in[i])]++;
     }  
 }
 
-void PerfectHash::insert(string in[]){
+void PerfectHash::build(string in[]){
     get_bucket_size(in);
-    int extra = 20;
+     int extra = 20;
     for (int i = 0; i < tam; i++)
     {
         int pos = first_hash(in[i]);
         int temp_tam = bucket_size[i]+extra;
         arr[pos] = vector<string>(temp_tam);
     }
-    
     for (int i = 0; i < tam; i++)
     {
-        if(search(in[i]))
-            return;
-        int f1 = first_hash(in[i]);
-        int f2 = second_hash(in[i],bucket_size[i]) ;
-        arr[f1][f2] = in[i];
+        insert(in[i],bucket_size[i]);
     }
+    
+}
+
+void PerfectHash::insert(string s, int sh){
+
+    if(search(s))
+        return;
+    int f1 = first_hash(s);
+    int f2 = second_hash(s,sh) ;
+    arr[f1][f2] = s;
+    
 }
 
 bool PerfectHash::search(string s){
-
+    int f1 = first_hash(s);
+    int f2 = second_hash(s,arr[f1].size()) ;
+    if(arr[f1][f2] == s)
+        return true;
+    return false;
 }
 
 int PerfectHash::size(){
