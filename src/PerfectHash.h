@@ -11,8 +11,7 @@ class PerfectHash {
     private: 
         int tam;
         bucket arr[12];
-        void first_hash();
-        void second_hash();
+        void hash();
 
     public:
         PerfectHash();
