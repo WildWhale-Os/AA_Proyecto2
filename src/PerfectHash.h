@@ -1,20 +1,19 @@
-#include <string>
-#include <vector>
+#include <bits/stdc++.h>
 
 using namespace std;
-
 
 class PerfectHash {
     private: 
         int tam;
-        vector<string> *arr;
-        void first_hash(string);
-        void second_hash(string);
+        unordered_set<string> *arr;
+        int first_hash(string);
+        int second_hash(string);
 
     public:
-        PerfectHash();
+        PerfectHash(int tam);
         ~PerfectHash();
-        void insert();
-        void search();
+        void insert(string);
+        int search(string);
         int size();
 };
+
