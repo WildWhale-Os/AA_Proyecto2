@@ -13,7 +13,7 @@ private:
   int b;
   int p;
   vector<Backet> buckets;
-  vector<list<pair<string, int>>> values;
+  vector<list<pair<string, int>>> *values;
   int hash(int &, int &);
   void get_randoms();
 

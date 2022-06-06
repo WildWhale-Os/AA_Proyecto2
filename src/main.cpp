@@ -31,7 +31,7 @@ void calculate_primes(int init, int end) {
     // verifica si en numero actual es primo
     if (isPrime(i)) {
       PRIMOS.push_back(i);
-      cout << i << endl;
+      // cout << i << endl;
     }
   }
 }
@@ -56,7 +56,7 @@ vector<string> get_kmers(string &data, int k) {
     string aux = "";
     for_each(data.begin() + i, data.begin() + (i + k - 1),
              [&aux](char &c) { aux += c; });
-    cout << aux << endl;
+    // cout << aux << endl;
     kmers.push_back(aux);
   }
   return kmers;
@@ -65,13 +65,13 @@ vector<string> get_kmers(string &data, int k) {
 int main(int argc, char *argv[]) {
   string data = get_data("./extra/clean_genes.txt");
   vector<string> kmers = get_kmers(data, 15);
-
   calculate_primes(kmers.size(), kmers.size() + 10000);
+
   clock_t begin, end;
   double time_spent;
   srand(time(NULL));
-
-  PerfectHash table = PerfectHash(PRIMOS[0]);
+  cout << kmers.size() << " " << PRIMOS.at(PRIMOS.size() - 1) << endl;
+  PerfectHash table = PerfectHash(PRIMOS.at(PRIMOS.size() - 1));
   table.build(kmers);
   string in;
   do {

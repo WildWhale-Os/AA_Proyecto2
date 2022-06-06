@@ -14,13 +14,19 @@ Backet ::Backet() {}
 Backet ::~Backet() {}
 
 void Backet::set_randoms(int &p) {
-  p = p;
+  this->p = p;
   a = rand() % p;
   b = rand() % p;
 }
 
 int Backet::hash(int &key, int &size) {
-  return (((a * (long int)key) + b) % p) % size;
+  // cout << key << " " << size << " " << p << endl;
+  long int aux = a * (long int)key;
+  aux += b;
+  int salida = aux % p;
+  salida = salida % size;
+
+  return salida;
 }
 
 int Backet::str_to_int(string &input) {
@@ -42,18 +48,20 @@ void Backet::build(list<pair<string, int>> &k_mers, int &p) {
   bool colition = false;
 
   while (!colition) {
-
     level2.assign(size, CLEAR);
     set_randoms(p);
+    // cout << a << " " << b << endl;
     list<pair<string, int>>::iterator iter = k_mers.begin();
 
     while (iter != k_mers.end() && !colition) {
       int key = this->hash(iter->second, size);
       string aux = level2[key];
       if (aux != CLEAR) {
-        if (aux == iter->first)
+        if (aux == iter->first) {
+          iter++;
           continue;
-        else {
+        } else {
+          // cout << "Rearmando " << iter->first << endl;
           colition = true;
           break;
         }

@@ -21,8 +21,8 @@ public:
 
 private:
   // variables internas
-  int a;
-  int b;
+  long int a;
+  long int b;
   int p;
   int size;
   vector<string> level2;
