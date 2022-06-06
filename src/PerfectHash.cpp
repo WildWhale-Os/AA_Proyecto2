@@ -1,63 +1,55 @@
 #include "PerfectHash.h"
+#include <cmath>
+#include <cstdlib>
+#include <list>
+#include <string>
+#include <utility>
+#include <vector>
 
 using namespace std;
 
-PerfectHash::PerfectHash(int tam){
-    this->tam = tam;
-    arr = new unordered_set<string>[tam]; 
-    //si terminamos usando sets, podria implementarce con un set de sets
+PerfectHash::PerfectHash(unsigned int p) {
+  this->p = p;
+  a = rand() % p;
+  b = rand() % p;
+}
+PerfectHash::~PerfectHash() {}
+
+unsigned int PerfectHash::hash(unsigned int &key, unsigned int &size) {
+  return (((a * (unsigned int)key) + b) % p) % size;
 }
 
-PerfectHash::~PerfectHash(){}
+void PerfectHash::get_randoms() {
+  a = rand() % p;
+  b = rand() % p;
+}
+void PerfectHash::build(vector<string> &input) {
+  table_size = input.size();
+  buckets.resize(table_size);
+  values = new vector<list<pair<string, unsigned int>>>(table_size);
+  while (true) {
+    for (string elem : input) {
+      unsigned int int_key = Backet::str_to_int(elem);
+      unsigned int key = this->hash(int_key, table_size);
+      values->at(key).push_back(pair<string, unsigned int>(elem, int_key));
+    }
+    unsigned int total = 0;
+    for (list<pair<string, unsigned int>> elem : *values)
+      total += elem.size() * elem.size();
+    if (total < 4 * input.size())
+      break;
+    free(values);
+    get_randoms();
+  }
 
-int PerfectHash::first_hash(string s){
-    int h = 0;
-	for (int i = 0; i < s.size(); ++i)
-	{
-		h = h*37 + s[i]; //funcion NO perfecta
-		h %= tam;
-	}
-    return h;
+  for (unsigned int i = 0; i < input.size(); i++) {
+    //cout << "Armando bucket " << i << " size " << values->at(i).size() << endl;
+    buckets[i].build(values->at(i), p);
+  }
 }
 
-int PerfectHash::second_hash(string s){
-    int h = 0;
-	for (int i = 0; i < s.size(); ++i)
-	{
-		h = h*43 + s[i]; //funcion NO perfecta
-		h %= tam;
-	}
-    return h;
+bool PerfectHash::search(string &str) {
+  unsigned int int_str = Backet::str_to_int(str);
+  unsigned int key = this->hash(int_str, table_size);
+  return buckets[key].search(str);
 }
-
-void PerfectHash::insert(string s){
-    if(search(s))
-        return;
-    arr[first_hash(s)].insert(s);
-}
-
-int PerfectHash::search(string s){
-    unordered_set<string>::iterator itr = arr[first_hash(s)].find(s);
-    if(itr == arr[first_hash(s)].end())
-        return 0;
-    return 1;
-}
-
-int PerfectHash::size(){}
-
-//                 |     set             | unordered_set
-// ---------------------------------------------------------
-// Ordering        | increasing  order   | no ordering
-//                 | (by default)        |
-
-// Implementation  | Self balancing BST  | Hash Table
-//                 | like Red-Black Tree |  
-
-// search time     | log(n)              | O(1) -> Average 
-//                 |                     | O(n) -> Worst Case
-
-// Insertion time  | log(n) + Rebalance  | Same as search
-                      
-// Deletion time   | log(n) + Rebalance  | Same as search
-
-// Overall space   | n                   | n
