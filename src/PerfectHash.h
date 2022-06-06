@@ -1,22 +1,24 @@
 #include <string>
+#include <utility>
 #include <vector>
 #include <random>
+#include "backet.h"
 
 using namespace std;
 
 class PerfectHash {
 private:
-  int tam; // cantidad de buckets
-  int total_size; // cantidad de elementos dentro de la estructura
-  vector<string> *arr;
-  int first_hash(string);
-  int second_hash(string, int*);
-  int hash(int,int,int,int,int);
+  int table_size; // cantidad de buckets
+  int a;
+  int b;
+  int p;
+  vector<Backet> buckets;
+  vector<list<pair<string, int>>> values;
+  int hash(int&,int&);
 
 public:
-  PerfectHash(int tam);
+  PerfectHash();
   ~PerfectHash();
-  void insert(string);
-  bool search(string);
-  int size();
+  void build(vector<string>&);
+  bool search(string&);
 };

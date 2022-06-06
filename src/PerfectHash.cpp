@@ -1,79 +1,37 @@
 #include "PerfectHash.h"
 #include <cmath>
+#include <cstdlib>
+#include <string>
 
 using namespace std;
 
-
-int PerfectHash::hash(int a, int b, int p, int key, int size) {
-  return abs(((a * key + b) % p) % size);
+PerfectHash::PerfectHash() {
+  p = 1000001;
+  a = rand() % p;
+  b = 1 + rand() % (p - 1);
 }
-
-PerfectHash::PerfectHash(int tam) {
-  this->tam = tam;
-  arr = new vector<string>[tam];
-  // si terminamos usando sets, podria implementarce con un set de sets
-}
-
 PerfectHash::~PerfectHash() {}
 
-int PerfectHash::first_hash(string s) {
-  int h = 0;
-  for (int i = 0; i < s.size(); ++i) {
-    h = h * 37 + s[i]; // funcion NO perfecta
-    h %= tam;
+int PerfectHash::hash(int &key, int &size) {
+  return (((a * key) + b) % p) % size;
+}
+
+void PerfectHash::build(vector<string> &input) {
+  table_size = input.size();
+  buckets.resize(table_size);
+  values.resize(table_size);
+  for (string elem : input) {
+    int int_key = Backet::str_to_int(elem);
+    int key = this->hash(int_key, table_size);
+    values[key].push_back(pair<string, int>(elem, int_key));
   }
-  return hash(this->a1, this->b1, this->p1, h, tam);
+
+  for (int i = 0; i < input.size(); i++)
+    buckets[i].build(values[i]);
 }
 
-int PerfectHash::second_hash(string s, int *hash_one) {
-  int h = 0;
-  for (int i = 0; i < s.size(); ++i) {
-    h = h * 43 + s[i]; // funcion NO perfecta
-    h %= tam;
-  }
-  return hash(this->a2, this->b2, this->p2, h, arr[*hash_one].size());
+bool PerfectHash::search(string &str) {
+  int int_str = Backet::str_to_int(str);
+  int key = this->hash(int_str, table_size);
+  return buckets[key].search(str);
 }
-
-void PerfectHash::insert(string s) {
-  if (search(s))
-    return;
-  int hash_one = first_hash(s);
-  int hash_two = second_hash(s, &hash_one);
-  vector<string> showsen = arr[hash_one];
-  showsen[hash_two] = s;
-}
-
-bool PerfectHash::search(string s) {
-  int hash_one = first_hash(s);
-  int hash_two = second_hash(s, &hash_one);
-  vector<string> showsen = arr[hash_one];
-
-  if (showsen.size() == 0)
-    return false;
-
-  if (showsen.at(hash_two) == s)
-    return true;
-
-  return false;
-}
-
-int PerfectHash::size() {
-  return total_size;
-}
-
-//                 |     set             | unordered_set
-// ---------------------------------------------------------
-// Ordering        | increasing  order   | no ordering
-//                 | (by default)        |
-
-// Implementation  | Self balancing BST  | Hash Table
-//                 | like Red-Black Tree |
-
-// search time     | log(n)              | O(1) -> Average
-//                 |                     | O(n) -> Worst Case
-
-// Insertion time  | log(n) + Rebalance  | Same as search
-
-// Deletion time   | log(n) + Rebalance  | Same as search
-
-// Overall space   | n                   | n
