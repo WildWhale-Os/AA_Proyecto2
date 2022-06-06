@@ -2,29 +2,29 @@
 
 using namespace std;
 
-typedef long int lint;
+//typedef long int lint;
 
-lint hash(lint a, lint b, lint p, int key, int size){
+int p_hash(int a, int b, int p, int key, int size){
   return ((a*key + b) % p) % size;
 }
 
 map<char,char> m (
     {
-        pair<char,char>('C',10),
-        pair<char,char>('G',01),
-        pair<char,char>('T',00),
-        pair<char,char>('A',11),
+        pair<char,char>('C',0),
+        pair<char,char>('G',1),
+        pair<char,char>('T',2),
+        pair<char,char>('A',3),
     }
-    );
-
+);
 
 class PerfectHash{
     private: 
 
         int tam;
         int *bucket_size;
+        int *string_int;
         vector<string> *arr;
-
+        
         int p1 = 17;
         int p2 = 23;
         int a1 = rand()%p1;
@@ -32,38 +32,36 @@ class PerfectHash{
         int b1 = 1 + rand()%(p1 - 1);
         int b2 = 1 + rand()%(p2 - 1);
         
-
-        int first_hash(string s){
-            int h = 0;
-            for (int i = 0; i < s.size(); ++i)
+        int to_int(string s){
+            int val = 0;
+            for (int i = 0; i < s.size()-1; i++)
             {
-                h = h*37 + s[i]; //funcion NO perfecta
-                h %= tam;
+                val += m[s[i]];
+                val = val<<2;
             }
-            return h;
+            val += m[s[s.size()-1]];
+            return val;
         }
 
-        int second_hash(string s,int t){
-            int h = 0;
-            cerr<<"t:"<<t<<endl;
-            for (int i = 0; i < s.size(); ++i)
-            {
-                h = h*43 + s[i]; //funcion NO perfecta
-                h %= t;
-            }
-            
-            return h;
+        int first_hash(int s){
+            return p_hash(a1,b1,p1,s,tam);
+        }
+
+        int second_hash(int s,int t){ 
+            return p_hash(a2,b2,p2,s,t);
         }
 
         void get_bucket_size(string in[]){
+
             for (int i = 0; i < tam; i++)
-            {
-                bucket_size[first_hash(in[i])]++;
+            { 
+                string_int[i] = to_int(in[i]);
+                bucket_size[first_hash(string_int[i])]++;
             }  
-            for (int i = 0; i < tam; i++)
-            {
-                cerr<<bucket_size[i]<<" ";
-            }cerr<<endl;
+            // for (int i = 0; i < tam; i++)
+            // {
+            //     cerr<<bucket_size[i]<<" ";
+            // }cerr<<endl;
             
         }
 
@@ -71,6 +69,7 @@ class PerfectHash{
         PerfectHash(int tam){
             this->tam = tam;
             bucket_size = new int[tam];
+            string_int = new int[tam];
             fill(bucket_size, bucket_size + tam + 1, 0);
             arr = new vector<string>[tam]; 
         }
@@ -82,34 +81,38 @@ class PerfectHash{
             //int extra = 20;
             for (int i = 0; i < tam; i++)
             {
-                int pos = first_hash(in[i]);
+                // int temp = string_int[i];
+                // int pos = first_hash(temp);
                 int temp_tam = bucket_size[i];
-                arr[pos] = vector<string>(temp_tam);
+                arr[i] = vector<string>(temp_tam);
             }
             for (int i = 0; i < tam; i++)
             {
-                insert(in[i],first_hash(in[i]));
+                int temp = to_int(in[i]);
+                insert(in[i], temp);
             }
         }
 
-        void insert(string s, int sh){
+        void insert(string a, int s){
 
-            if(search(s))
+            if(search(a,s))
                 return;
             int f1 = first_hash(s);
-            int f2 = second_hash(s,sh) ;
-            printf("ph[%d][%d] == %s\n",f1,f2,s);
-            if(f2 == -1)
-                return;
+            int f2 = second_hash(s,bucket_size[f1]);
+                                                    printf("ph[%d][%d] == %s\n",f1,f2,s);
+            // if(f2 == -1)
+            //     return;
             arr[f1][f2] = s;
             
         }
 
-        bool search(string s){
+        bool search(string a, int s){
             int f1 = first_hash(s);
+            if(f1 = 0);
+                return false;
             int f2 = second_hash(s,arr[f1].size()) ;
-            cerr<<arr[f1].size()<<endl;
-            if(arr[f1][f2] == s)
+                                                        cerr<<arr[f1].size()<<endl;
+            if(arr[f1][f2] == a)
                 return true;
             return false;
         }
@@ -118,12 +121,12 @@ class PerfectHash{
 };
 
 int main(int argc, char *argv[]) {
-  cout << "hola mundo" << endl;
-  int N = 6;
-  PerfectHash ph(N);
-  string test[N] = {"a","b","a","c","d","a"};
-  ph.build(test);
-  cout<<ph.search(test[1])<<endl;
+    cout << "hola mundo" << endl;
+    int N = 6;
+    PerfectHash ph(N);
+    string test[N] = {"a","b","a","c","d","a"};
+    ph.build(test);
+    cout<<ph.search(test[1],1)<<endl;
   
-  return 0;
+    return 0;
 }
