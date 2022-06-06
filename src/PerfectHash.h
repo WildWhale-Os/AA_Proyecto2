@@ -1,8 +1,8 @@
+#include "backet.h"
+#include <random>
 #include <string>
 #include <utility>
 #include <vector>
-#include <random>
-#include "backet.h"
 
 using namespace std;
 
@@ -14,11 +14,12 @@ private:
   int p;
   vector<Backet> buckets;
   vector<list<pair<string, int>>> values;
-  int hash(int&,int&);
+  int hash(int &, int &);
+  void get_randoms();
 
 public:
-  PerfectHash();
+  PerfectHash(int);
   ~PerfectHash();
-  void build(vector<string>&);
-  bool search(string&);
+  void build(vector<string> &);
+  bool search(string &);
 };

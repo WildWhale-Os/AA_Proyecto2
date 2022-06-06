@@ -14,7 +14,7 @@ public:
   // funciones publicas
   Backet();
   ~Backet();
-  void build(list<pair<string, int>>);
+  void build(list<pair<string, int>>&, int&);
   bool search(string &);
   static int str_to_int(string &);
   void print_bases();
@@ -27,6 +27,6 @@ private:
   int size;
   vector<string> level2;
   // funciones internas
-  void set_randoms();
+  void set_randoms(int&);
   int hash(int &, int &);
 };

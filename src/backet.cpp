@@ -13,25 +13,27 @@ Backet ::Backet() {}
 
 Backet ::~Backet() {}
 
-void Backet::set_randoms() {
-  p = 17;
+void Backet::set_randoms(int &p) {
+  p = p;
   a = rand() % p;
-  b = 1 + rand() % (p - 1);
+  b = rand() % p;
 }
 
-int Backet::hash(int &key, int &size) { return (((a * key) + b) % p) % size; }
+int Backet::hash(int &key, int &size) {
+  return (((a * (long int)key) + b) % p) % size;
+}
 
 int Backet::str_to_int(string &input) {
   int val = 0;
   for (char &elem : input) {
-    cout << elem << endl;
-    val += (int)bases.find(elem)->second;
+    // cout << elem << endl;
     val = val << 2;
+    val += (int)bases.find(elem)->second;
   }
   return val;
 }
 
-void Backet::build(list<pair<string, int>> k_mers) {
+void Backet::build(list<pair<string, int>> &k_mers, int &p) {
   if (k_mers.empty()) {
     size = 0;
     return;
@@ -42,14 +44,19 @@ void Backet::build(list<pair<string, int>> k_mers) {
   while (!colition) {
 
     level2.assign(size, CLEAR);
-    set_randoms();
+    set_randoms(p);
     list<pair<string, int>>::iterator iter = k_mers.begin();
 
     while (iter != k_mers.end() && !colition) {
       int key = this->hash(iter->second, size);
-      if (level2[key] != CLEAR) {
-        colition = true;
-        break;
+      string aux = level2[key];
+      if (aux != CLEAR) {
+        if (aux == iter->first)
+          continue;
+        else {
+          colition = true;
+          break;
+        }
       }
       level2[key] = iter->first;
       iter++;

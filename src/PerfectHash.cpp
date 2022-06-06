@@ -1,33 +1,47 @@
 #include "PerfectHash.h"
 #include <cmath>
 #include <cstdlib>
+#include <list>
 #include <string>
 
 using namespace std;
 
-PerfectHash::PerfectHash() {
-  p = 1000001;
+PerfectHash::PerfectHash(int p) {
+  p = p;
   a = rand() % p;
-  b = 1 + rand() % (p - 1);
+  b = rand() % p;
 }
 PerfectHash::~PerfectHash() {}
 
 int PerfectHash::hash(int &key, int &size) {
-  return (((a * key) + b) % p) % size;
+  return (((a * (long int)key) + b) % p) % size;
 }
 
+void PerfectHash::get_randoms() {
+  a = rand() % p;
+  b = rand() % p;
+}
 void PerfectHash::build(vector<string> &input) {
   table_size = input.size();
   buckets.resize(table_size);
   values.resize(table_size);
-  for (string elem : input) {
-    int int_key = Backet::str_to_int(elem);
-    int key = this->hash(int_key, table_size);
-    values[key].push_back(pair<string, int>(elem, int_key));
+  while (true) {
+    for (string elem : input) {
+      int int_key = Backet::str_to_int(elem);
+      int key = this->hash(int_key, table_size);
+      values[key].push_back(pair<string, int>(elem, int_key));
+    }
+    int total = 0;
+    for (list<pair<string, int>> elem : values)
+      total += elem.size() * elem.size();
+    if (total < 4 * input.size())
+      break;
+    values.clear();
+    get_randoms();
   }
 
   for (int i = 0; i < input.size(); i++)
-    buckets[i].build(values[i]);
+    buckets[i].build(values[i], p);
 }
 
 bool PerfectHash::search(string &str) {
