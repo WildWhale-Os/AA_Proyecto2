@@ -8,15 +8,15 @@
 #include <vector>
 
 using namespace std;
-vector<int> PRIMOS;
+vector<unsigned int> PRIMOS;
 
-bool isPrime(int n) {
+bool isPrime(unsigned int n) {
   // 1 y 0 no son primos
   if (n == 1 || n == 0)
     return false;
 
   // hasta raiz cuadrada de n
-  for (int i = 2; i * i <= n; i++) {
+  for (unsigned int i = 2; i * i <= n; i++) {
     // si el numero es divisible por i entonces no es primo
     if (n % i == 0)
       return false;
@@ -25,9 +25,9 @@ bool isPrime(int n) {
   return true;
 }
 
-void calculate_primes(int init, int end) {
+void calculate_primes(unsigned int init, unsigned int end) {
   // verificar desde casda numero hasta n
-  for (int i = init; i <= end; i++) {
+  for (unsigned int i = init; i <= end; i++) {
     // verifica si en numero actual es primo
     if (isPrime(i)) {
       PRIMOS.push_back(i);
@@ -50,9 +50,9 @@ string get_data(string filename) {
   return salida;
 }
 
-vector<string> get_kmers(string &data, int k) {
+vector<string> get_kmers(string &data, unsigned int k) {
   vector<string> kmers;
-  for (int i = 0; i < data.length() - k; i++) {
+  for (unsigned int i = 0; i < data.length() - k; i++) {
     string aux = "";
     for_each(data.begin() + i, data.begin() + (i + k - 1),
              [&aux](char &c) { aux += c; });
@@ -62,8 +62,8 @@ vector<string> get_kmers(string &data, int k) {
   return kmers;
 }
 
-int main(int argc, char *argv[]) {
-  string data = get_data("./extra/clean_genes.txt");
+int main(unsigned int argc, char *argv[]) {
+  string data = get_data("clean_genes.txt");
   vector<string> kmers = get_kmers(data, 15);
   calculate_primes(kmers.size(), kmers.size() + 10000);
 

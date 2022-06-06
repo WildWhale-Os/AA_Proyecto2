@@ -14,19 +14,19 @@ public:
   // funciones publicas
   Backet();
   ~Backet();
-  void build(list<pair<string, int>>&, int&);
+  void build(list<pair<string, unsigned int>>&, unsigned int&);
   bool search(string &);
-  static int str_to_int(string &);
+  static unsigned int str_to_int(string &);
   void print_bases();
 
 private:
   // variables internas
-  long int a;
-  long int b;
-  int p;
-  int size;
+  unsigned int a;
+  unsigned int b;
+  unsigned int p;
+  unsigned int size;
   vector<string> level2;
   // funciones internas
-  void set_randoms(int&);
-  int hash(int &, int &);
+  void set_randoms(unsigned int&);
+  unsigned int hash(unsigned int &, unsigned int &);
 };

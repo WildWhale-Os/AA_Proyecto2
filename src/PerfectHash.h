@@ -8,17 +8,17 @@ using namespace std;
 
 class PerfectHash {
 private:
-  int table_size; // cantidad de buckets
-  int a;
-  int b;
-  int p;
+  unsigned int table_size; // cantidad de buckets
+  unsigned int a;
+  unsigned int b;
+  unsigned int p;
   vector<Backet> buckets;
-  vector<list<pair<string, int>>> *values;
-  int hash(int &, int &);
+  vector<list<pair<string, unsigned int>>> *values;
+  unsigned int hash(unsigned int &, unsigned int &);
   void get_randoms();
 
 public:
-  PerfectHash(int);
+  PerfectHash(unsigned int);
   ~PerfectHash();
   void build(vector<string> &);
   bool search(string &);
