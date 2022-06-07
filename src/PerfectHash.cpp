@@ -1,4 +1,5 @@
 #include "PerfectHash.h"
+#include <algorithm>
 #include <cmath>
 #include <cstdlib>
 #include <list>
@@ -12,6 +13,7 @@ PerfectHash::PerfectHash(unsigned int p) {
   this->p = p;
   a = rand() % p;
   b = rand() % p;
+  values = nullptr;
 }
 PerfectHash::~PerfectHash() { free(values); }
 
@@ -25,6 +27,13 @@ void PerfectHash::get_randoms() {
   this->changes++;
 }
 void PerfectHash::build(vector<string> &input) {
+  if (values != nullptr) {
+    changes = 0;
+    get_randoms();
+    buckets.clear();
+    values->erase(values->begin(), values->end());
+    free(values);
+  }
   table_size = input.size();
   buckets.resize(table_size);
   values = new vector<list<pair<string, unsigned int>>>(table_size);
@@ -32,14 +41,22 @@ void PerfectHash::build(vector<string> &input) {
     for (string elem : input) {
       unsigned int int_key = Backet::str_to_int(elem);
       unsigned int key = this->hash(int_key, table_size);
-      values->at(key).push_back(pair<string, unsigned int>(elem, int_key));
+      // buscar si el elemento no se repita
+      list<pair<string, unsigned int>>::iterator found =
+          find(values->at(key).begin(), values->at(key).end(),
+               pair<string, unsigned int>(elem, int_key));
+
+      if (found != values->at(key).end())
+        values->at(key).push_back(pair<string, unsigned int>(elem, int_key));
     }
     unsigned int total = 0;
     for (list<pair<string, unsigned int>> elem : *values)
       total += elem.size() * elem.size();
     if (total < 2 * input.size())
       break;
-    values->clear();
+    values->erase(values->begin(), values->end());
+    free(values);
+    values = new vector<list<pair<string, unsigned int>>>(table_size);
     get_randoms();
   }
 

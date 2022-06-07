@@ -1,5 +1,6 @@
 #include "PerfectHash.h"
 #include <algorithm>
+#include <cmath>
 #include <ctime>
 #include <fstream>
 #include <iostream>
@@ -65,12 +66,12 @@ int main(int argc, char *argv[]) {
 
   srand(time(NULL));
   string data = get_data("./extra/clean_genes.txt");
-  cout << "N;search" << endl;
-  cout << "0;0" << endl;
+  cout << "N;build;search" << endl;
+  cout << "0;0;0" << endl;
   vector<string> kmers = get_kmers(data, 15);
   calculate_primes(kmers.size(), kmers.size() + 10000);
 
-  for (int n = 1000; n <= 20000; n += 1000) {
+  for (int n = 10000; n <= 200000; n += 10000) {
     // experimentacion de construccion
     cout << n << ";";
     vector<string> test;
@@ -80,21 +81,22 @@ int main(int argc, char *argv[]) {
     PerfectHash table = PerfectHash(PRIMOS[40]);
     // variable de tiempo medio
     clock_t start, finish;
-    clock_t tiempo_medio;
+    double tiempo_medio;
     // mediocion de construccion
-    table.build(test);
-    // d += finish - start;
-    // cout << d << ";";
+    start = clock();
+    for(int i = 0; i < 100; i++)
+      table.build(test);
+    finish = clock() - start;
+    tiempo_medio = ((double)finish/CLOCKS_PER_SEC)/100; 
+    cout << tiempo_medio << ";";
     // experimentacion de busqueda
     // mediocion de busquedas
     // d = 0;
-    for (string elem : test) {
-      start = clock();
+    start = clock();
+    for (string elem : test) 
       table.search(elem);
-      finish += clock() - finish;
-    }
-
-    tiempo_medio = ((float)finish / CLOCKS_PER_SEC) / test.size();
+    finish += clock() - start;
+    tiempo_medio = ((double)finish / CLOCKS_PER_SEC) / test.size();
     cout << tiempo_medio << endl;
   }
   return 0;

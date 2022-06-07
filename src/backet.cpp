@@ -21,7 +21,7 @@ void Backet::set_randoms(unsigned int &p) {
 
 unsigned int Backet::hash(unsigned int &key, unsigned int &size) {
   // cout << key << " " << size << " " << p << endl;
-  long unsigned int aux = a * (long unsigned int)key;
+  unsigned int aux = a * key;
   aux += b;
   unsigned int salida = aux % p;
   salida = salida % size;
