@@ -3,12 +3,18 @@
 ## Primero que todo
 Crear una carpeta build en el directorio root del Proyecto.
 
-```mkdir build/```
+  ```bash
+  $ mkdir build/
+  ```
 
 ## Building
 Para construir el archivo debe ejecutar, estos dos commandos estando
 en el directorio root del Proyecto
 
- ```$ cmake .```
+ ```bash
+ $ cmake .
+ ```
 
- ```$ cmake --build . ```
+ ```bash
+ $ cmake --build .
+ ```
