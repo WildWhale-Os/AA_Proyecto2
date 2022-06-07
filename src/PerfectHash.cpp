@@ -1,83 +1,60 @@
 #include "PerfectHash.h"
+#include <cmath>
+#include <cstdlib>
+#include <list>
+#include <string>
+#include <utility>
+#include <vector>
 
 using namespace std;
 
-typedef long int lint;
+PerfectHash::PerfectHash(unsigned int p) {
+  this->p = p;
+  a = rand() % p;
+  b = rand() % p;
+}
+PerfectHash::~PerfectHash() {}
 
-lint hash(lint a, lint b, lint p, int key, int size){
-  return ((a*key + b)%p)%size;
+unsigned int PerfectHash::hash(unsigned int &key, unsigned int &size) {
+  return (((a * key) + b) % p) % size;
 }
 
-PerfectHash::PerfectHash(int tam){
-    this->tam = tam;
-    int aux[tam] = {};
-    bucket_size = aux;
-    arr = new vector<string>[tam]; 
+void PerfectHash::get_randoms() {
+  a = rand() % p;
+  b = rand() % p;
+  this->changes++;
 }
-
-PerfectHash::~PerfectHash(){}
-
-int PerfectHash::first_hash(string s){
-    int h = 0;
-	for (int i = 0; i < s.size(); ++i)
-	{
-		h = h*37 + s[i]; //funcion NO perfecta
-		h %= tam;
-	}
-    return h;
-}
-
-int PerfectHash::second_hash(string s,int t){
-    int h = 0;
-	for (int i = 0; i < s.size(); ++i)
-	{
-		h = h*43 + s[i]; //funcion NO perfecta
-		h %= t;
-	}
-    return h;
-}
-
-void PerfectHash::get_bucket_size(string in[]){
-    for (int i = 0; i < tam; i++)
-    {
-        bucket_size[first_hash(in[i])]++;
-    }  
-}
-
-void PerfectHash::build(string in[]){
-    get_bucket_size(in);
-     int extra = 20;
-    for (int i = 0; i < tam; i++)
-    {
-        int pos = first_hash(in[i]);
-        int temp_tam = bucket_size[i]+extra;
-        arr[pos] = vector<string>(temp_tam);
+void PerfectHash::build(vector<string> &input) {
+  table_size = input.size();
+  buckets.resize(table_size);
+  //values.resize(table_size);
+  values = new vector<list<pair<string,unsigned int>>> (table_size);
+  while (true) {
+    values = new vector<list<pair<string,unsigned int>>> (table_size);
+    for (string elem : input) {
+      unsigned int int_key = Backet::str_to_int(elem);
+      unsigned int key = this->hash(int_key, table_size);
+      //values[key].push_back(pair<string, unsigned int>(elem, int_key));
+      values->at(key).push_back(pair<string, unsigned int>(elem, int_key));
     }
-    for (int i = 0; i < tam; i++)
-    {
-        insert(in[i],bucket_size[i]);
-    }
-    
+    unsigned int total = 0;
+    for (list<pair<string, unsigned int>> elem : *values)
+      total += elem.size() * elem.size();
+    if (total < 2 * input.size())
+      break;
+    free(values);
+    get_randoms();
+  }
+  //free(values);
+  for (unsigned int i = 0; i < input.size(); i++) {
+    buckets[i].build(values->at(i), p);
+  }
 }
 
-void PerfectHash::insert(string s, int sh){
-
-    if(search(s))
-        return;
-    int f1 = first_hash(s);
-    int f2 = second_hash(s,sh) ;
-    arr[f1][f2] = s;
-    
+bool PerfectHash::search(string &str) {
+  unsigned int int_str = Backet::str_to_int(str);
+  unsigned int key = this->hash(int_str, table_size);
+  return buckets[key].search(str);
 }
 
-bool PerfectHash::search(string s){
-    int f1 = first_hash(s);
-    int f2 = second_hash(s,arr[f1].size()) ;
-    if(arr[f1][f2] == s)
-        return true;
-    return false;
-}
-
-int PerfectHash::size(){
-    
-}
+int PerfectHash::get_changes() { return this->changes; }
