@@ -9,6 +9,7 @@
 #include <string>
 #include <time.h>
 #include <vector>
+#include <ctime>
 
 using namespace std;
 vector<unsigned int> PRIMOS;
@@ -66,47 +67,43 @@ vector<string> get_kmers(string &data, unsigned int k) {
 }
 
 int main(int argc, char *argv[]) {
-
+  int n=1,num, pos;
+	int rep=300;
+	double tiempoLineal,tiempoBinario,ms=1000;
+	clock_t start=clock();
+	srand(time(NULL));
+	cout<<"n"<<";"<<"Tiempo algoritmo lineal"<<";"<<"Tiempo algoritmo recursivo"<<endl;
   srand(time(NULL));
   string data = get_data("clean_genes.txt");
   cout << "N;build;search" << endl;
   cout << "0;0;0" << endl;
   vector<string> kmers = get_kmers(data, 15);
   calculate_primes(kmers.size(), kmers.size() + 10000);
-
-  for (int n = 10000; n <= 1000000; n += 10000) {
-    // experimentacion de construccion
-    cout << n << ";";
-    vector<string> test;
-    for (int j = 0; j < n; j++)
-      test.push_back(kmers.at(j));
-    // para buscar
-    PerfectHash table = PerfectHash(n + 1);
-    // variable de tiempo medio
-    double tiempo_medio;
-    auto d = 0;
-    // mediocion de construccion
-    for (int i = 0; i < 100; i++) {
-      auto start = chrono::high_resolution_clock::now();
-      table.build(test);
-      try{ auto finish = chrono::high_resolution_clock::now();
-      d += chrono::duration_cast<chrono::nanoseconds>(finish - start).count();}
-      catch(...) { cerr<<"ERROR"<<endl;}
-      
-    }
-    tiempo_medio = (float)d / 100;
-    cout << tiempo_medio << ";";
-    // experimentacion de busqueda
-    d = 0;
-    // mediocion de busquedas
-    for (string elem : test) {
-      auto start = chrono::high_resolution_clock::now();
+  PerfectHash table = PerfectHash(n + 1);
+  vector<string> test;
+  for (int j = 0; j < n; j++)
+    test.push_back(kmers.at(j));
+  for(n=100000;n<=1000000;n+=100000){
+    tiempoLineal=0,tiempoBinario=0;
+    for(int it=0;it<rep;it++){
+      num=rand() % n;
+      start=clock();
+      for (int i = 0; i < 100; i++)
+      {
+        table.build(test);
+      }
+      tiempoLineal+= ((double)clock() - start);
+      //tiempoLineal /= 100;
+      start=clock();
+      for (string elem : test) {
       table.search(elem);
-      auto finish = chrono::high_resolution_clock::now();
-      d += chrono::duration_cast<chrono::nanoseconds>(finish - start).count();
-    }
-    tiempo_medio = (float)d / test.size();
-    cout << tiempo_medio << endl;
+      
+      }
+      tiempoBinario+= ((double)clock() - start);
+      //tiempoBinario /= 100;
+  }
+  cout<<n<<";"<<tiempoLineal*ms/(double)rep/CLOCKS_PER_SEC<<";"<<tiempoBinario*ms/(double)rep/CLOCKS_PER_SEC<<endl;
+  
   }
   return 0;
 }
