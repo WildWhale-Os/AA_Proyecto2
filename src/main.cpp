@@ -66,8 +66,8 @@ int main(int argc, char *argv[]) {
 
   srand(time(NULL));
   string data = get_data("./extra/clean_genes.txt");
-  cout << "N;build;search" << endl;
-  cout << "0;0;0" << endl;
+  cout << "N;build;search;ab_changes" << endl;
+  cout << "0;0;0;0" << endl;
   vector<string> kmers = get_kmers(data, 15);
   calculate_primes(kmers.size(), kmers.size() + 10000);
 
@@ -83,21 +83,25 @@ int main(int argc, char *argv[]) {
     clock_t start, finish;
     double tiempo_medio;
     // mediocion de construccion
+    double total_changes = 0;
     start = clock();
-    for(int i = 0; i < 100; i++)
+    for (int i = 0; i < 100; i++) {
       table.build(test);
+      total_changes += table.get_changes();
+    }
     finish = clock() - start;
-    tiempo_medio = ((double)finish/CLOCKS_PER_SEC)/100; 
+    tiempo_medio = ((double)finish / CLOCKS_PER_SEC) / 100;
+    total_changes /= 100;
     cout << tiempo_medio << ";";
     // experimentacion de busqueda
     // mediocion de busquedas
     // d = 0;
     start = clock();
-    for (string elem : test) 
+    for (string elem : test)
       table.search(elem);
     finish += clock() - start;
     tiempo_medio = ((double)finish / CLOCKS_PER_SEC) / test.size();
-    cout << tiempo_medio << endl;
+    cout << tiempo_medio << ";" << total_changes << endl;
   }
   return 0;
 }
