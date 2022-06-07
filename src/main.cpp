@@ -1,5 +1,6 @@
 #include "PerfectHash.h"
 #include <algorithm>
+#include <ctime>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -78,26 +79,22 @@ int main(int argc, char *argv[]) {
     // para buscar
     PerfectHash table = PerfectHash(PRIMOS[40]);
     // variable de tiempo medio
-    time_t start, finish;
-    time_t tiempo_medio;
-    double d = 0;
+    clock_t start, finish;
+    clock_t tiempo_medio;
     // mediocion de construccion
-    // time(&start);
     table.build(test);
-    time(&finish);
     // d += finish - start;
     // cout << d << ";";
     // experimentacion de busqueda
     // mediocion de busquedas
     // d = 0;
     for (string elem : test) {
-      time(&start);
+      start = clock();
       table.search(elem);
-      time(&finish);
-      d += finish - start;
+      finish += clock() - finish;
     }
 
-    tiempo_medio = d / test.size();
+    tiempo_medio = ((float)finish / CLOCKS_PER_SEC) / test.size();
     cout << tiempo_medio << endl;
   }
   return 0;
