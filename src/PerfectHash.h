@@ -12,8 +12,9 @@ private:
   unsigned int a;
   unsigned int b;
   unsigned int p;
+  unsigned int changes = 1;
   vector<Backet> buckets;
-  vector<list<pair<string, unsigned int>>> *values;
+  vector<list<pair<string, unsigned int>>> values;
   unsigned int hash(unsigned int &, unsigned int &);
   void get_randoms();
 
@@ -22,4 +23,5 @@ public:
   ~PerfectHash();
   void build(vector<string> &);
   bool search(string &);
+  int get_changes();
 };
