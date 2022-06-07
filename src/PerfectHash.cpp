@@ -13,7 +13,7 @@ PerfectHash::PerfectHash(unsigned int p) {
   a = rand() % p;
   b = rand() % p;
 }
-PerfectHash::~PerfectHash() {}
+PerfectHash::~PerfectHash() { free(values); }
 
 unsigned int PerfectHash::hash(unsigned int &key, unsigned int &size) {
   return (((a * key) + b) % p) % size;
@@ -27,24 +27,24 @@ void PerfectHash::get_randoms() {
 void PerfectHash::build(vector<string> &input) {
   table_size = input.size();
   buckets.resize(table_size);
-  values = vector<list<pair<string, unsigned int>>>(table_size);
+  values = new vector<list<pair<string, unsigned int>>>(table_size);
   while (true) {
     for (string elem : input) {
       unsigned int int_key = Backet::str_to_int(elem);
       unsigned int key = this->hash(int_key, table_size);
-      values.at(key).push_back(pair<string, unsigned int>(elem, int_key));
+      values->at(key).push_back(pair<string, unsigned int>(elem, int_key));
     }
     unsigned int total = 0;
-    for (list<pair<string, unsigned int>> elem : values)
+    for (list<pair<string, unsigned int>> elem : *values)
       total += elem.size() * elem.size();
     if (total < 2 * input.size())
       break;
-    values.clear();
+    values->clear();
     get_randoms();
   }
 
   for (unsigned int i = 0; i < input.size(); i++) {
-    buckets[i].build(values.at(i), p);
+    buckets[i].build(values->at(i), p);
   }
 }
 

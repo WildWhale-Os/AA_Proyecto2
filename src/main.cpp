@@ -1,13 +1,8 @@
-// #include "PerfectHash.h"
 #include "PerfectHash.h"
 #include <algorithm>
-#include <chrono>
-#include <cmath>
 #include <fstream>
-#include <ios>
 #include <iostream>
 #include <string>
-#include <time.h>
 #include <vector>
 
 using namespace std;
@@ -69,41 +64,40 @@ int main(int argc, char *argv[]) {
 
   srand(time(NULL));
   string data = get_data("./extra/clean_genes.txt");
-  cout << "N;build;search" << endl;
-  cout << "0;0;0" << endl;
+  cout << "N;search" << endl;
+  cout << "0;0" << endl;
   vector<string> kmers = get_kmers(data, 15);
   calculate_primes(kmers.size(), kmers.size() + 10000);
 
-  for (int n = 10000; n <= kmers.size() - 1; n += 10000) {
+  for (int n = 1000; n <= 20000; n += 1000) {
     // experimentacion de construccion
     cout << n << ";";
     vector<string> test;
     for (int j = 0; j < n; j++)
       test.push_back(kmers.at(j));
     // para buscar
-    PerfectHash table = PerfectHash(n + 1);
+    PerfectHash table = PerfectHash(PRIMOS[40]);
     // variable de tiempo medio
-    double tiempo_medio;
-    auto d = 0;
+    time_t start, finish;
+    time_t tiempo_medio;
+    double d = 0;
     // mediocion de construccion
-    for (int i = 0; i < 100; i++) {
-      auto start = chrono::high_resolution_clock::now();
-      table.build(test);
-      auto finish = chrono::high_resolution_clock::now();
-      d += chrono::duration_cast<chrono::nanoseconds>(finish - start).count();
-    }
-    tiempo_medio = (float)d / 100;
-    cout << tiempo_medio << ";";
+    // time(&start);
+    table.build(test);
+    time(&finish);
+    // d += finish - start;
+    // cout << d << ";";
     // experimentacion de busqueda
-    d = 0;
     // mediocion de busquedas
+    // d = 0;
     for (string elem : test) {
-      auto start = chrono::high_resolution_clock::now();
+      time(&start);
       table.search(elem);
-      auto finish = chrono::high_resolution_clock::now();
-      d += chrono::duration_cast<chrono::nanoseconds>(finish - start).count();
+      time(&finish);
+      d += finish - start;
     }
-    tiempo_medio = (float)d / test.size();
+
+    tiempo_medio = d / test.size();
     cout << tiempo_medio << endl;
   }
   return 0;
