@@ -9,3 +9,6 @@ build/*
 bin
 extra/*
 *.a
+salida/*
+*.pdf
+*.zip
